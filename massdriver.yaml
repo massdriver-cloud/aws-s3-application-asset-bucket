@@ -2,50 +2,98 @@
 schema: draft-07
 name: "aws-s3-application-asset-bucket"
 description: "creates an s3 bucket for durable arbitrary blob stroage for application assets"
-ref: github.com/YOUR_NAME_HERE/aws-s3-application-asset-bucket
+ref: github.com/massdriver-cloud/aws-s3-application-asset-bucket
 access: "public"
 type: "bundle"
 
 # schema-params.json
 # JSON Schema sans-fields above
 params:
-  examples:
-    - foo: US-West 2 VPC
-    - foo: US-East 1 VPC
   required:
-    - foo
+    - bucket
   properties:
-    foo:
-      type: string
-      title: Foo
-      description: Name of aws-s3-application-asset-bucket
-      default: ""
-      examples:
-        - US-West 2 VPC
-        - US-East 1 VPC
+    bucket:
+      type: object
+      title: bucket 
+      description: details of the s3 bucket
+      required:
+        - region
+        - intelligentTiering
+      properties:
+        region:
+          # TODO does this have to be http ref or can I use a massdriver/ alias? copied this pattern from https://github.com/massdriver-cloud/aws-sns-pubsub-topic/blob/main/massdriver.yaml#L31
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+        inteligentTiering:
+          type: object
+          required:
+            - enabled
+          properties:
+            enabled:
+              type: boolean
+              title: enabled
+              description: "enable inteligent tiering https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html"
+              default: false
+            filter:
+              type: object
+              title: filter
+              default: {}
+              properties:
+                prefix:
+                  type: string
+                  title: prefix
+                  description: "object prefix to apply inteligent tiering to"
+                  default: ""
+                tags:
+                  type: object
+                  title: tags
+                  description: "object tags to apply inteligent tiering to"
+                  default: ""
+            tiering:
+              type: array
+              items:
+                type: object
+                title: tiering
+                required:
+                  - days
+                  - access
+                properties:
+                  days:
+                    type: integer
+                    title: days
+                    description: "number of days to wait before moving to next tier"
+                    default: 30
+                  access_tier:
+                    type: string
+                    title: access_tier
+                    description: "access tier to move to"
+                    enum:
+                      - ARCHIVE_ACCESS
+                      - DEEP_ARCHIVE_ACCESS
+                    default: ARCHIVE_ACCESS
+              
+
+
+          
+
+
 
 # schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
 connections:
-  properties: {}
-  # required:
-  # - aws_authentication
-  # - network
-  # properties:
-  #   aws_authentication:
-  #     $ref: massdriver/aws-iam-role
-  #   network:
-  #     $ref: massdriver/aws-regional-cloud
+  required:
+  - aws_authentication
+  properties:
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
 
 # schema-artifacts.json
 # Named list of output artifacts  (map[name]artifact)
 artifacts:
-  properties: {}
-  # required:
-  #   - network
-  # properties:
-  #   network:
-  #     $ref: massdriver/aws-vpc
+  required:
+    - bucket
+  properties:
+    bucket:
+      $ref: massdriver/aws-s3-bucket
 
 # schema-ui.json
 # List of form customizations for params-schema

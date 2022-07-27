@@ -1,18 +1,31 @@
-# resource "massdriver_artifact" "<name>" {
-#   field                = "the field in the artifacts schema"
-#   provider_resource_id = "AWS ARN or K8S SelfLink"
-#   type                 = "file-name-from-artifacts"
-#   name                 = "a contextual name for the artifact"
-#   artifact = jsonencode(
-#     {
-#       # data = {
-#       #   # This should match the aws-rds-arn.json schema file
-#       #   arn = "aws::..."
-#       # }
-#       # specs = {
-#       #   # Any existing spec in ./specs
-#       #   # aws = {}
-#       # }
-#     }
-#   )
-# }
+// TODO Remove this output
+output "arn" {
+    value = aws_s3_bucket.main.arn
+}
+resource "massdriver_artifact" "bucket" {
+  field                = "bucket"
+  provider_resource_id = aws_s3_bucket.main.arn
+  name                 = "AWS S3 Bucket: ${aws_s3_bucket.main.arn}"
+  artifact = jsonencode(
+    {
+      data = {
+        infrastructure = {
+          arn = aws_s3_bucket.main.arn
+        }
+        # TODO 
+        # security = {
+        #   iam = {
+        #     publish = {
+        #       policy_arn = aws_iam_policy.publish.arn
+        #     }
+        #   }
+        # }
+      }
+      specs = {
+        aws = {
+          region = var.bucket.region
+        }
+      }
+    }
+  )
+}
