@@ -9,6 +9,21 @@ type: "bundle"
 # schema-params.json
 # JSON Schema sans-fields above
 params:
+  examples:
+    - __name: No tiering
+      bucket:
+        region: us-west-2
+        intelligent_tiering:
+          enabled: false
+    - __name: One year archive
+      bucket:
+        region: us-west-2
+        intelligent_tiering:
+          enabled: true
+          tiering:
+            - days: 365
+              access_tier: ARCHIVE_ACCESS
+
   required:
     - bucket
   properties:
@@ -18,12 +33,12 @@ params:
       description: details of the s3 bucket
       required:
         - region
-        - intelligentTiering
+        - intelligent_tiering
       properties:
         region:
           # TODO does this have to be http ref or can I use a massdriver/ alias? copied this pattern from https://github.com/massdriver-cloud/aws-sns-pubsub-topic/blob/main/massdriver.yaml#L31
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
-        inteligentTiering:
+        inteligent_tiering:
           type: object
           required:
             - enabled
@@ -70,12 +85,6 @@ params:
                       - ARCHIVE_ACCESS
                       - DEEP_ARCHIVE_ACCESS
                     default: ARCHIVE_ACCESS
-              
-
-
-          
-
-
 
 # schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
