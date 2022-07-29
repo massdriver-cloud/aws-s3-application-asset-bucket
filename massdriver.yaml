@@ -36,9 +36,8 @@ params:
         - intelligent_tiering
       properties:
         region:
-          # TODO does this have to be http ref or can I use a massdriver/ alias? copied this pattern from https://github.com/massdriver-cloud/aws-sns-pubsub-topic/blob/main/massdriver.yaml#L31
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
-        inteligent_tiering:
+        intelligent_tiering:
           type: object
           required:
             - enabled
@@ -46,7 +45,7 @@ params:
             enabled:
               type: boolean
               title: enabled
-              description: "enable inteligent tiering https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html"
+              description: "enable intelligent tiering https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html"
               default: false
             filter:
               type: object
@@ -56,12 +55,12 @@ params:
                 prefix:
                   type: string
                   title: prefix
-                  description: "object prefix to apply inteligent tiering to"
+                  description: "object prefix to apply intelligent tiering to"
                   default: ""
                 tags:
                   type: object
                   title: tags
-                  description: "object tags to apply inteligent tiering to"
+                  description: "object tags to apply intelligent tiering to"
                   default: ""
             tiering:
               type: array
