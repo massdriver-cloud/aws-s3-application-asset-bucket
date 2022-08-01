@@ -33,7 +33,6 @@ params:
       description: details of the s3 bucket
       required:
         - region
-        - intelligent_tiering
       properties:
         region:
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
@@ -54,9 +53,14 @@ params:
                     title: prefix
                     description: "object prefix to apply intelligent tiering to"
                   tags:
-                    type: object
                     title: tags
+                    type: object
+                    default: {}
                     description: "object tags to apply intelligent tiering to"
+                    patternProperties:
+                      ^[a-zA-Z0-9_-]+$:
+                        type: string
+
               tiering:
                 type: array
                 items:
@@ -103,7 +107,11 @@ artifacts:
 # List of form customizations for params-schema
 ui:
   ui:order:
-    - "*"
+    - "bucket"
+  bucket:
+    ui:order:
+      - "region"
+      - "intelligent_tiering"
   ## set top level ui:wiget
   # secret_key:
   #    ui:widget: "password"
