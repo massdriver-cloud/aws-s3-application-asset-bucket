@@ -38,52 +38,48 @@ params:
         region:
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
         intelligent_tiering:
-          type: object
-          required:
-            - enabled
-          properties:
-            enabled:
-              type: boolean
-              title: enabled
-              description: "enable intelligent tiering https://docs.aws.amazon.com/AmazonS3/latest/userguide/intelligent-tiering.html"
-              default: false
-            filter:
-              type: object
-              title: filter
-              default: {}
-              properties:
-                prefix:
-                  type: string
-                  title: prefix
-                  description: "object prefix to apply intelligent tiering to"
-                  default: ""
-                tags:
-                  type: object
-                  title: tags
-                  description: "object tags to apply intelligent tiering to"
-                  default: ""
-            tiering:
-              type: array
-              items:
+          type: array
+          title: intelligent_tiering 
+          description: "rules for intelligent tiering on prefixes in the bucket"
+          items:
+            required:
+              - tiering
+            properties:
+              filter:
                 type: object
-                title: tiering
-                required:
-                  - days
-                  - access
+                title: filter
                 properties:
-                  days:
-                    type: integer
-                    title: days
-                    description: "number of days to wait before moving to next tier"
-                    default: 30
-                  access_tier:
+                  prefix:
                     type: string
-                    title: access_tier
-                    description: "access tier to move to"
-                    enum:
-                      - ARCHIVE_ACCESS
-                      - DEEP_ARCHIVE_ACCESS
-                    default: ARCHIVE_ACCESS
+                    title: prefix
+                    description: "object prefix to apply intelligent tiering to"
+                  tags:
+                    type: object
+                    title: tags
+                    description: "object tags to apply intelligent tiering to"
+              tiering:
+                type: array
+                items:
+                  type: object
+                  title: tiering
+                  required:
+                    - days
+                    - access_tier
+                  properties:
+                    days:
+                      type: integer
+                      title: days
+                      description: "number of days to wait before moving to next tier"
+                      minimum: 90
+                      default: 90
+                    access_tier:
+                      type: string
+                      title: access_tier
+                      description: "access tier to move to"
+                      enum:
+                        - ARCHIVE_ACCESS
+                        - DEEP_ARCHIVE_ACCESS
+                      default: ARCHIVE_ACCESS
 
 # schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
