@@ -57,9 +57,10 @@ params:
                     type: object
                     default: {}
                     description: "object tags to apply intelligent tiering to"
-                    patternProperties:
-                      ^[a-zA-Z0-9_-]+$:
-                        type: string
+                    additionalProperties:
+                      patternProperties:
+                        ^[a-zA-Z0-9_-]+$:
+                          type: string
 
               tiering:
                 type: array
