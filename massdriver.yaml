@@ -10,19 +10,11 @@ type: "bundle"
 # JSON Schema sans-fields above
 params:
   examples:
-    - __name: No tiering
+    - __name: Default
       bucket:
         region: us-west-2
         intelligent_tiering:
           enabled: false
-    - __name: One year archive
-      bucket:
-        region: us-west-2
-        intelligent_tiering:
-          enabled: true
-          tiering:
-            - days: 365
-              access_tier: ARCHIVE_ACCESS
 
   required:
     - bucket
