@@ -1,0 +1,123 @@
+# This file will be used to generate all of the schema-*.json files in a bundle
+schema: draft-07
+name: "aws-s3-application-asset-bucket"
+description: "creates an s3 bucket for durable arbitrary blob stroage for application assets"
+ref: github.com/massdriver-cloud/aws-s3-application-asset-bucket
+access: "public"
+type: "bundle"
+
+# schema-params.json
+# JSON Schema sans-fields above
+params:
+  examples:
+    - __name: No tiering
+      bucket:
+        region: us-west-2
+        intelligent_tiering:
+          enabled: false
+    - __name: One year archive
+      bucket:
+        region: us-west-2
+        intelligent_tiering:
+          enabled: true
+          tiering:
+            - days: 365
+              access_tier: ARCHIVE_ACCESS
+
+  required:
+    - bucket
+  properties:
+    bucket:
+      type: object
+      title: bucket 
+      description: details of the s3 bucket
+      required:
+        - region
+      properties:
+        region:
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+        intelligent_tiering:
+          type: array
+          title: intelligent_tiering 
+          description: "rules for intelligent tiering on prefixes in the bucket"
+          items:
+            required:
+              - tiering
+            properties:
+              filter:
+                type: object
+                title: filter
+                properties:
+                  prefix:
+                    type: string
+                    title: prefix
+                    description: "object prefix to apply intelligent tiering to"
+                  tags:
+                    title: tags
+                    type: object
+                    default: {}
+                    description: "object tags to apply intelligent tiering to"
+                    additionalProperties:
+                      patternProperties:
+                        ^[a-zA-Z0-9_-]+$:
+                          type: string
+
+              tiering:
+                type: array
+                items:
+                  type: object
+                  title: tiering
+                  required:
+                    - days
+                    - access_tier
+                  properties:
+                    days:
+                      type: integer
+                      title: days
+                      description: "number of days to wait before moving to next tier"
+                      minimum: 90
+                      default: 90
+                    access_tier:
+                      type: string
+                      title: access_tier
+                      description: "access tier to move to"
+                      enum:
+                        - ARCHIVE_ACCESS
+                        - DEEP_ARCHIVE_ACCESS
+                      default: ARCHIVE_ACCESS
+
+# schema-connections.json
+# Named list of input connections (artifacts) (map[name]artifact)
+connections:
+  required:
+  - aws_authentication
+  properties:
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+
+# schema-artifacts.json
+# Named list of output artifacts  (map[name]artifact)
+artifacts:
+  required:
+    - bucket
+  properties:
+    bucket:
+      $ref: massdriver/aws-s3-bucket
+
+# schema-ui.json
+# List of form customizations for params-schema
+ui:
+  ui:order:
+    - "bucket"
+  bucket:
+    ui:order:
+      - "region"
+      - "intelligent_tiering"
+  ## set top level ui:wiget
+  # secret_key:
+  #    ui:widget: "password"
+  ## Set key in an array of objects
+  # secrets:
+  #   items:
+  #     mdKeyId:
+  #       ui:widget: "hidden"
