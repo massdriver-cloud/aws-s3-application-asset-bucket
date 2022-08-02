@@ -1,7 +1,3 @@
-// TODO Remove this output
-output "arn" {
-    value = aws_s3_bucket.main.arn
-}
 resource "massdriver_artifact" "bucket" {
   field                = "bucket"
   provider_resource_id = aws_s3_bucket.main.arn
