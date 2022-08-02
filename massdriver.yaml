@@ -13,8 +13,6 @@ params:
     - __name: Default
       bucket:
         region: us-west-2
-        intelligent_tiering:
-          enabled: false
 
   required:
     - bucket
