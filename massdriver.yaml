@@ -36,55 +36,6 @@ params:
       properties:
         region:
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
-        intelligent_tiering:
-          type: array
-          title: intelligent_tiering 
-          description: "rules for intelligent tiering on prefixes in the bucket"
-          items:
-            required:
-              - tiering
-            properties:
-              filter:
-                type: object
-                title: filter
-                properties:
-                  prefix:
-                    type: string
-                    title: prefix
-                    description: "object prefix to apply intelligent tiering to"
-                  tags:
-                    title: tags
-                    type: object
-                    default: {}
-                    description: "object tags to apply intelligent tiering to"
-                    additionalProperties:
-                      patternProperties:
-                        ^[a-zA-Z0-9_-]+$:
-                          type: string
-
-              tiering:
-                type: array
-                items:
-                  type: object
-                  title: tiering
-                  required:
-                    - days
-                    - access_tier
-                  properties:
-                    days:
-                      type: integer
-                      title: days
-                      description: "number of days to wait before moving to next tier"
-                      minimum: 90
-                      default: 90
-                    access_tier:
-                      type: string
-                      title: access_tier
-                      description: "access tier to move to"
-                      enum:
-                        - ARCHIVE_ACCESS
-                        - DEEP_ARCHIVE_ACCESS
-                      default: ARCHIVE_ACCESS
 
 # schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
@@ -111,8 +62,7 @@ ui:
     - "bucket"
   bucket:
     ui:order:
-      - "region"
-      - "intelligent_tiering"
+      - "*"
   ## set top level ui:wiget
   # secret_key:
   #    ui:widget: "password"
