@@ -14,12 +14,12 @@ resource "massdriver_artifact" "bucket" {
         }
         security = {
             iam = {
-            read = {
-                policy_arn = aws_iam_policy.read.arn
-            }
-            write = {
-                policy_arn = aws_iam_policy.write.arn
-            }
+                read = {
+                    policy_arn = aws_iam_policy.read.arn
+                }
+                write = {
+                    policy_arn = aws_iam_policy.write.arn
+                }
             }
         }
       }
