@@ -10,6 +10,7 @@ resource "aws_iam_policy" "read" {
         Effect   = "Allow"
         Resource = "${aws_s3_bucket.main.arn}/*"
       }
+      // TODO add KMS policy
     ]
   })
 }
@@ -26,6 +27,7 @@ resource "aws_iam_policy" "write" {
         Effect   = "Allow"
         Resource = "${aws_s3_bucket.main.arn}/*"
       }
+      // TODO add KMS policy
     ]
   })
 }
