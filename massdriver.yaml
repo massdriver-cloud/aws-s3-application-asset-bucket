@@ -1,4 +1,3 @@
-# This file will be used to generate all of the schema-*.json files in a bundle
 schema: draft-07
 name: "aws-s3-application-asset-bucket"
 description: "creates an s3 bucket for durable arbitrary blob stroage for application assets"
@@ -6,8 +5,6 @@ ref: github.com/massdriver-cloud/aws-s3-application-asset-bucket
 access: "public"
 type: "bundle"
 
-# schema-params.json
-# JSON Schema sans-fields above
 params:
   examples:
     - __name: Default
@@ -27,8 +24,6 @@ params:
         region:
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
 
-# schema-connections.json
-# Named list of input connections (artifacts) (map[name]artifact)
 connections:
   required:
   - aws_authentication
@@ -36,8 +31,6 @@ connections:
     aws_authentication:
       $ref: massdriver/aws-iam-role
 
-# schema-artifacts.json
-# Named list of output artifacts  (map[name]artifact)
 artifacts:
   required:
     - bucket
@@ -45,19 +38,9 @@ artifacts:
     bucket:
       $ref: massdriver/aws-s3-bucket
 
-# schema-ui.json
-# List of form customizations for params-schema
 ui:
   ui:order:
     - "bucket"
   bucket:
     ui:order:
       - "*"
-  ## set top level ui:wiget
-  # secret_key:
-  #    ui:widget: "password"
-  ## Set key in an array of objects
-  # secrets:
-  #   items:
-  #     mdKeyId:
-  #       ui:widget: "hidden"
