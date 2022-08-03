@@ -1,0 +1,46 @@
+schema: draft-07
+name: "aws-s3-application-asset-bucket"
+description: "creates an s3 bucket for durable arbitrary blob stroage for application assets"
+ref: github.com/massdriver-cloud/aws-s3-application-asset-bucket
+access: "public"
+type: "bundle"
+
+params:
+  examples:
+    - __name: Default
+      bucket:
+        region: us-west-2
+
+  required:
+    - bucket
+  properties:
+    bucket:
+      type: object
+      title: bucket 
+      description: details of the s3 bucket
+      required:
+        - region
+      properties:
+        region:
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+
+connections:
+  required:
+  - aws_authentication
+  properties:
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+
+artifacts:
+  required:
+    - bucket
+  properties:
+    bucket:
+      $ref: massdriver/aws-s3-bucket
+
+ui:
+  ui:order:
+    - "bucket"
+  bucket:
+    ui:order:
+      - "*"
