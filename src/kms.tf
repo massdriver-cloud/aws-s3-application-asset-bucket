@@ -1,6 +1,5 @@
 data "aws_caller_identity" "current" {}
 
-// Policy from https://docs.aws.amazon.com/efs/latest/ug/encryption-at-rest.html
 data "aws_iam_policy_document" "s3" {
   statement {
     sid = "Allow access to S3 for all principals in the account that are authorized to use S3"

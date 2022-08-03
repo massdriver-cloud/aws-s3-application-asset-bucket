@@ -6,7 +6,7 @@ resource "aws_iam_policy" "read" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = ["s3:GetObject"]
+        Action   = ["s3:GetObject", "s3: ListBucket"]
         Effect   = "Allow"
         Resource = "${aws_s3_bucket.main.arn}/*"
       }
@@ -23,7 +23,7 @@ resource "aws_iam_policy" "write" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = ["s3:*Object"]
+        Action   = ["s3:*Object", "s3:ListBucket"]
         Effect   = "Allow"
         Resource = "${aws_s3_bucket.main.arn}/*"
       }
