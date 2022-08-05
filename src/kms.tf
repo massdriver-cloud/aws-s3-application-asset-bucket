@@ -1,6 +1,12 @@
+module "kms" {
+  source      = "github.com/massdriver-cloud/terraform-modules//aws/aws-kms-key?ref=afe781a"
+  md_metadata = var.md_metadata
+  policy      = data.aws_iam_policy_document.s3.json
+}
+
+
 data "aws_caller_identity" "current" {}
 
-// Policy from https://docs.aws.amazon.com/efs/latest/ug/encryption-at-rest.html
 data "aws_iam_policy_document" "s3" {
   statement {
     sid = "Allow access to S3 for all principals in the account that are authorized to use S3"
@@ -21,7 +27,7 @@ data "aws_iam_policy_document" "s3" {
     condition {
       test     = "StringLike"
       variable = "kms:ViaService"
-      values   = ["s3.*.amazonaws.com"]
+      values   = ["s3.amazonaws.com", "s3.*.amazonaws.com"]
     }
     condition {
       test     = "StringEquals"
@@ -42,17 +48,11 @@ data "aws_iam_policy_document" "s3" {
   }
 }
 
-module "kms" {
-  source      = "github.com/massdriver-cloud/terraform-modules//aws/aws-kms-key?ref=afe781a"
-  md_metadata = var.md_metadata
-  policy      = data.aws_iam_policy_document.s3.json
-}
-
-
 resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
   bucket = aws_s3_bucket.main.bucket
 
   rule {
+    bucket_key_enabled = true
     apply_server_side_encryption_by_default {
       kms_master_key_id = module.kms.key_arn
       sse_algorithm     = "aws:kms"
