@@ -1,3 +1,10 @@
+module "kms" {
+  source      = "github.com/massdriver-cloud/terraform-modules//aws/aws-kms-key?ref=afe781a"
+  md_metadata = var.md_metadata
+  policy      = data.aws_iam_policy_document.s3.json
+}
+
+
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "s3" {
@@ -20,7 +27,7 @@ data "aws_iam_policy_document" "s3" {
     condition {
       test     = "StringLike"
       variable = "kms:ViaService"
-      values   = ["s3.amazonaws.com"]
+      values   = ["s3.amazonaws.com", "s3.*.amazonaws.com"]
     }
     condition {
       test     = "StringEquals"
@@ -40,13 +47,6 @@ data "aws_iam_policy_document" "s3" {
     resources = ["*"]
   }
 }
-
-module "kms" {
-  source      = "github.com/massdriver-cloud/terraform-modules//aws/aws-kms-key?ref=afe781a"
-  md_metadata = var.md_metadata
-  policy      = data.aws_iam_policy_document.s3.json
-}
-
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
   bucket = aws_s3_bucket.main.bucket

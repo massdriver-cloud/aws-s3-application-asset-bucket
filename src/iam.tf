@@ -3,7 +3,7 @@ data "aws_iam_policy_document" "bucket_read" {
     sid    = "ListAccess"
     effect = "Allow"
     resources = [
-      "*"
+      "arn:aws:s3:::${aws_s3_bucket.main.id}"
     ]
     actions = [
       "s3:ListBucket",
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "bucket_write" {
     sid    = "ListAccess"
     effect = "Allow"
     resources = [
-      "*"
+      "arn:aws:s3:::${aws_s3_bucket.main.id}"
     ]
     actions = [
       "s3:ListBucket",
@@ -49,12 +49,10 @@ data "aws_iam_policy_document" "bucket_write" {
     effect = "Allow"
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.main.id}/*",
-      "arn:aws:s3:::${aws_s3_bucket.main.id}"
     ]
     actions = [
       "s3:DeleteObject*",
       "s3:PutObject*",
-      "s3:GetObject*",
       "s3:RestoreObject"
     ]
   }
