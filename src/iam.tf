@@ -1,33 +1,87 @@
-resource "aws_iam_policy" "read" {
-  name        = "${var.md_metadata.name_prefix}-read-objects"
-  description = "S3 read policy: ${var.md_metadata.name_prefix}"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = ["s3:GetObject", "s3: ListBucket"]
-        Effect   = "Allow"
-        Resource = "${aws_s3_bucket.main.arn}/*"
-      }
-      // TODO add KMS policy
+data "aws_iam_policy_document" "bucket_read" {
+  statement {
+    sid    = "ListAccess"
+    effect = "Allow"
+    resources = [
+      "*"
     ]
-  })
+    actions = [
+      "s3:ListBucket",
+      "s3:HeadBucket"
+    ]
+  }
+  statement {
+    sid    = "ReadAccess"
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.main.id}/*"
+    ]
+    actions = [
+      "s3:GetObject*"
+    ]
+  }
+  statement {
+    sid    = "DecryptAccess"
+    effect = "Allow"
+    resources = [
+        module.kms.key_arn
+    ]
+    actions = [
+      "kms:Decrypt"
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "bucket_write" {
+  statement {
+    sid    = "ListAccess"
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    actions = [
+      "s3:ListBucket",
+      "s3:HeadBucket"
+    ]
+  }
+  statement {
+    sid    = "WriteAccess"
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.main.id}/*",
+      "arn:aws:s3:::${aws_s3_bucket.main.id}"
+    ]
+    actions = [
+      "s3:DeleteObject*",
+      "s3:PutObject*",
+      "s3:GetObject*",
+      "s3:RestoreObject"
+    ]
+  }
+  statement {
+    sid    = "EncryptAccess"
+    effect = "Allow"
+    resources = [
+      module.kms.key_arn
+    ]
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "read" {
+  name        = "${aws_s3_bucket.main.id}-read-objects"
+  description = "S3 read policy: ${aws_s3_bucket.main.id}"
+
+  policy = data.aws_iam_policy_document.bucket_read.json
 }
 
 resource "aws_iam_policy" "write" {
-  name        = "${var.md_metadata.name_prefix}-write-objects"
-  description = "S3 read policy: ${var.md_metadata.name_prefix}"
+  name        = "${aws_s3_bucket.main.id}-write-objects"
+  description = "S3 write policy: ${aws_s3_bucket.main.id}"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = ["s3:*Object", "s3:ListBucket"]
-        Effect   = "Allow"
-        Resource = "${aws_s3_bucket.main.arn}/*"
-      }
-      // TODO add KMS policy
-    ]
-  })
+  policy = data.aws_iam_policy_document.bucket_write.json
 }
