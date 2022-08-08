@@ -1,6 +1,6 @@
 # aws-s3-application-asset-bucket
 
-creates an s3 bucket for durable arbitrary blob stroage for application assets
+AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more.
 
 ## Development
 
