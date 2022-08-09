@@ -46,4 +46,4 @@ ui:
       - "*"
     region:
       ui:field: supportedCloudLocationsDropdown
-      cloudService: S3
+      cloudService: aws
