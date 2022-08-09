@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "bucket_read" {
     sid    = "DecryptAccess"
     effect = "Allow"
     resources = [
-        module.kms.key_arn
+      module.kms.key_arn
     ]
     actions = [
       "kms:Decrypt"
