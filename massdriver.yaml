@@ -16,8 +16,7 @@ params:
   properties:
     bucket:
       type: object
-      title: bucket 
-      description: details of the s3 bucket
+      title: Bucket
       required:
         - region
       properties:
