@@ -71,15 +71,15 @@ data "aws_iam_policy_document" "bucket_write" {
 }
 
 resource "aws_iam_policy" "read" {
-  name        = "${aws_s3_bucket.main.id}-read-objects"
-  description = "S3 read policy: ${aws_s3_bucket.main.id}"
+  name        = "${var.md_metadata.name_prefix}-read"
+  description = "S3 read policy: ${var.md_metadata.name_prefix}"
 
   policy = data.aws_iam_policy_document.bucket_read.json
 }
 
 resource "aws_iam_policy" "write" {
-  name        = "${aws_s3_bucket.main.id}-write-objects"
-  description = "S3 write policy: ${aws_s3_bucket.main.id}"
+  name        = "${var.md_metadata.name_prefix}-write"
+  description = "S3 write policy: ${var.md_metadata.name_prefix}"
 
   policy = data.aws_iam_policy_document.bucket_write.json
 }
