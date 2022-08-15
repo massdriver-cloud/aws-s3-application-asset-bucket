@@ -43,3 +43,6 @@ ui:
   bucket:
     ui:order:
       - "*"
+    region:
+      ui:field: supportedCloudLocationsDropdown
+      cloudService: aws

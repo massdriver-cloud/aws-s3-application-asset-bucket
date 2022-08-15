@@ -9,14 +9,14 @@ resource "massdriver_artifact" "bucket" {
           arn = aws_s3_bucket.main.arn
         }
         security = {
-            iam = {
-                read = {
-                    policy_arn = aws_iam_policy.read.arn
-                }
-                write = {
-                    policy_arn = aws_iam_policy.write.arn
-                }
+          iam = {
+            read = {
+              policy_arn = aws_iam_policy.read.arn
             }
+            write = {
+              policy_arn = aws_iam_policy.write.arn
+            }
+          }
         }
       }
       specs = {
