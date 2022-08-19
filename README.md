@@ -52,3 +52,28 @@ terraform plan -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tf
 #### Other files
 * `operator.mdx` TBD
 * `schema.stories.json` TBD
+# JSON Schema
+
+*AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more.*
+
+## Properties
+
+- **`bucket`** *(object)*: Cannot contain additional properties.
+  - **`region`** *(string)*: AWS Region to provision in.
+
+    Examples:
+    ```json
+    "us-west-2"
+    ```
+
+## Examples
+
+  ```json
+  {
+      "__name": "Default",
+      "bucket": {
+          "region": "us-west-2"
+      }
+  }
+  ```
+
