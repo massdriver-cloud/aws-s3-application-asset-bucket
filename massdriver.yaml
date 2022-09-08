@@ -1,7 +1,7 @@
 schema: draft-07
 name: "aws-s3-application-asset-bucket"
 description: "AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more."
-ref: github.com/massdriver-cloud/aws-s3-application-asset-bucket
+source_url: github.com/massdriver-cloud/aws-s3-application-asset-bucket
 access: "public"
 type: "bundle"
 
