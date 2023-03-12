@@ -1,0 +1,41 @@
+# aws-s3-application-asset-bucket
+Amazon S3 (Simple Storage Service) is a highly scalable and durable object storage service that provides developers with a secure and cost-effective way to store and retrieve any amount of data. It offers a simple API interface and enables applications to easily store and retrieve images, videos, audio files, and other assets without worrying about capacity, availability, or data loss.
+
+## Use Cases
+### Asset Serving for API
+Many APIs need persistent blob storage for artifacts/manifests/objects that aren't suitable for storage in a database.
+### Media Storage
+Amazon S3 provides an ideal solution for storing and delivering media assets, such as images, videos, and audio files, for web and mobile applications.
+### Backup and Disaster Recovery
+S3 can be used to backup important application assets, such as code, configurations, and databases, to ensure they are always available in the event of a disaster or outage.
+### Machine Learning Model Storage
+Large machine learning models can store model data in S3 and load it as needed by applications
+
+## Design
+This bundle is designed around the specific use-case of storing application assets in S3. For this reason, assumptions are made regarding the configuration of the bucket. For example, public access is disabled, object versioning is disabled.
+
+## Best Practices
+### High Availability
+Deploys regional S3 for High availability in the event of zonal failure
+### Dedicated KMS Key
+Uses a dedicated KMS key with narrowly scoped permission for encryption
+
+## Security
+### KMS Encryption
+A KMS key is created and narrowly scoped to the bucket for encrypting all assets.
+### Private ACL
+No public access is allowed to this bucket
+
+## Policies
+The following policies are created for managing access to the S3 bucket.
+* `read`: Grants read access to objects in the bucket
+* `write`: Grants access to write objects to the bucket
+
+## Non-intentions / Out of Scope Use-cases  (for this bundle)
+- Eventing bucket for lambda ETL (would include notifications)
+- Static Website Content (would include routing / endpoint configuration)
+- Cold / Archival storage only
+- Data Lake (analytics configuration and option for transfer accelerate configuration)
+- Replication to other regions
+- Requester Pays user content download
+- Log Storage
