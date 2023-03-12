@@ -39,4 +39,3 @@ The following policies are created for managing access to the S3 bucket.
 - Replication to other regions
 - Requester Pays user content download
 - Log Storage
-    - Many distributed apps flush their logs (potentially of varying structures) to a bucket that a separate service does analytics on or provides a GUI / filtering interface over. A concrete example could be logs from every smart TV (consumers may have different software versions sending different structure of logs) and these ultimately get dumped to a bucket where an analytics pipeline can see common patterns of crash / error logs and the preceding events. Additionally a support team query service could retrieve logs for a particular device from the same bucket when troubleshooting an individual user&#39;s pain.
