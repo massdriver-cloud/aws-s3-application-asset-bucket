@@ -7,12 +7,16 @@ type: "bundle"
 
 params:
   examples:
-    - __name: Default
-      bucket:
-        region: us-west-2
+    - __name: Development
+      monitoring:
+        access_logging: false
+    - __name: Production
+      monitoring:
+        access_logging: true
 
   required:
     - bucket
+    - monitoring
   properties:
     bucket:
       type: object
@@ -23,6 +27,17 @@ params:
         region:
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
           $md.immutable: true
+    monitoring:
+      title: Monitoring
+      type: object
+      required:
+        - access_logging
+      properties:
+        access_logging:
+          title: Enable Access Logging
+          description: Enabling this will create an additional bucket for storing [access logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html)
+          type: boolean
+          default: false
 
 connections:
   required:
@@ -40,7 +55,8 @@ artifacts:
 
 ui:
   ui:order:
-    - "bucket"
+    - bucket
+    - monitoring
   bucket:
     ui:order:
       - "*"
