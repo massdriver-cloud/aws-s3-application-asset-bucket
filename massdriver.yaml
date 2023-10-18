@@ -8,9 +8,13 @@ type: "bundle"
 params:
   examples:
     - __name: Development
+      bucket:
+        force_destroy: true
       monitoring:
         access_logging: false
     - __name: Production
+      bucket:
+        force_destroy: false
       monitoring:
         access_logging: true
 
@@ -23,10 +27,16 @@ params:
       title: Bucket
       required:
         - region
+        - force_destroy
       properties:
         region:
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
           $md.immutable: true
+        force_destroy:
+          title: Force Destroy Objects
+          description: "**WARNING** Enabling this will delete all objects in the bucket during decommission. Disabling will block bucket deletion unless the bucket is empty."
+          type: boolean
+          default: false
     monitoring:
       title: Monitoring
       type: object
@@ -59,6 +69,8 @@ ui:
     - monitoring
   bucket:
     ui:order:
+      - region
+      - force_destroy
       - "*"
     region:
       ui:field: supportedCloudLocationsDropdown
