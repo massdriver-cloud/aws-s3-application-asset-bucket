@@ -57,6 +57,7 @@ Form input parameters for configuring a bundle for deployment.
 ## Properties
 
 - **`bucket`** *(object)*
+  - **`force_destroy`** *(boolean)*: **WARNING** Enabling this will delete all objects in the bucket during decommission. Disabling will block bucket deletion unless the bucket is empty. Default: `False`.
   - **`region`** *(string)*: AWS Region to provision in.
 
     Examples:
@@ -64,13 +65,30 @@ Form input parameters for configuring a bundle for deployment.
     "us-west-2"
     ```
 
+- **`monitoring`** *(object)*
+  - **`access_logging`** *(boolean)*: Enabling this will create an additional bucket for storing [access logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html). Default: `False`.
 ## Examples
 
   ```json
   {
-      "__name": "Default",
+      "__name": "Development",
       "bucket": {
-          "region": "us-west-2"
+          "force_destroy": true
+      },
+      "monitoring": {
+          "access_logging": false
+      }
+  }
+  ```
+
+  ```json
+  {
+      "__name": "Production",
+      "bucket": {
+          "force_destroy": false
+      },
+      "monitoring": {
+          "access_logging": true
       }
   }
   ```
@@ -112,11 +130,6 @@ Connections from other bundles that this bundle depends on.
         "us-west-2"
         ```
 
-      - **`resource`** *(string)*
-      - **`service`** *(string)*
-      - **`zone`** *(string)*: AWS Availability Zone.
-
-        Examples:
 <!-- CONNECTIONS:END -->
 
 </details>
@@ -147,7 +160,7 @@ Resources created by this bundle that can be connected to other bundles.
 
     - **`security`** *(object)*: Informs downstream services of network and/or IAM policies. Cannot contain additional properties.
       - **`iam`** *(object)*: IAM Policies. Cannot contain additional properties.
-        - **`^[a-z-/]+$`** *(object)*
+        - **`^[a-z]+[a-z_]*[a-z]+$`** *(object)*
           - **`policy_arn`** *(string)*: AWS IAM policy ARN.
 
             Examples:
@@ -158,6 +171,18 @@ Resources created by this bundle that can be connected to other bundles.
             ```json
             "arn:aws:ec2::ACCOUNT_NUMBER:vpc/vpc-foo"
             ```
+
+      - **`identity`** *(object)*: For instances where IAM policies must be attached to a role attached to an AWS resource, for instance AWS Eventbridge to Firehose, this attribute should be used to allow the downstream to attach it's policies (Firehose) directly to the IAM role created by the upstream (Eventbridge). It is important to remember that connections in massdriver are one way, this scheme perserves the dependency relationship while allowing bundles to control the lifecycles of resources under it's management. Cannot contain additional properties.
+        - **`role_arn`** *(string)*: ARN for this resources IAM Role.
+
+          Examples:
+          ```json
+          "arn:aws:rds::ACCOUNT_NUMBER:db/prod"
+          ```
+
+          ```json
+          "arn:aws:ec2::ACCOUNT_NUMBER:vpc/vpc-foo"
+          ```
 
       - **`network`** *(object)*: AWS security group rules to inform downstream services of ports to open for communication. Cannot contain additional properties.
         - **`^[a-z-]+$`** *(object)*
@@ -183,11 +208,6 @@ Resources created by this bundle that can be connected to other bundles.
         "us-west-2"
         ```
 
-      - **`resource`** *(string)*
-      - **`service`** *(string)*
-      - **`zone`** *(string)*: AWS Availability Zone.
-
-        Examples:
 <!-- ARTIFACTS:END -->
 
 </details>
