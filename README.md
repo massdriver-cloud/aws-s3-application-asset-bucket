@@ -17,7 +17,7 @@ AWS S3 Bucket optimized for storing arbitrary application files like avatar imag
 
 ## Design
 
-For detailed information, check out our [Operator Guide](operator.mdx) for this bundle.
+For detailed information, check out our [Operator Guide](operator.md) for this bundle.
 
 ## Usage
 
