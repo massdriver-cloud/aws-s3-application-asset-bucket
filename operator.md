@@ -2,6 +2,16 @@
 
 Amazon S3 (Simple Storage Service) is a scalable object storage service that allows you to store and retrieve any amount of data from anywhere on the web. With this service, you can manage application assets, such as files, static websites, backups, and more, with high durability, availability, and performance.
 
+### Use Cases
+#### Asset Serving for API
+Many APIs need persistent blob storage for artifacts/manifests/objects that aren't suitable for storage in a database.
+#### Media Storage
+Amazon S3 provides an ideal solution for storing and delivering media assets, such as images, videos, and audio files, for web and mobile applications.
+#### Backup and Disaster Recovery
+S3 can be used to backup important application assets, such as code, configurations, and databases, to ensure they are always available in the event of a disaster or outage.
+#### Machine Learning Model Storage
+Large machine learning models can store model data in S3 and load it as needed by applications
+
 ### Design Decisions
 
 1. **KMS Integration**: Implemented server-side encryption using AWS KMS to ensure data at rest is always encrypted.
