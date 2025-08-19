@@ -1,37 +1,35 @@
 schema: draft-07
-name: "aws-s3-application-asset-bucket"
-description: "AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more."
-source_url: github.com/massdriver-cloud/aws-s3-application-asset-bucket
-access: "public"
-type: "bundle"
-
+name: aws-s3-application-asset-bucket
+version: 1.0.0
+description: AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more.
+source_url: https://github.com/massdriver-cloud/aws-s3-application-asset-bucket
+type: application
 params:
   examples:
-    - __name: Development
-      bucket:
-        force_destroy: true
-      monitoring:
-        access_logging: false
-    - __name: Production
-      bucket:
-        force_destroy: false
-      monitoring:
-        access_logging: true
-
+  - __name: Development
+    bucket:
+      force_destroy: true
+    monitoring:
+      access_logging: false
+  - __name: Production
+    bucket:
+      force_destroy: false
+    monitoring:
+      access_logging: true
   required:
-    - bucket
-    - monitoring
+  - bucket
+  - monitoring
   properties:
     bucket:
       type: object
       title: Bucket
       required:
-        - region
-        - force_destroy
+      - region
+      - force_destroy
       properties:
         region:
-          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
-          $md.immutable: true
+          "$ref": https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+          "$md.immutable": true
         force_destroy:
           title: Force Destroy Objects
           description: "**WARNING** Enabling this will delete all objects in the bucket during decommission. Disabling will block bucket deletion unless the bucket is empty."
@@ -41,37 +39,40 @@ params:
       title: Monitoring
       type: object
       required:
-        - access_logging
+      - access_logging
       properties:
         access_logging:
           title: Enable Access Logging
           description: Enabling this will create an additional bucket for storing [access logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html)
           type: boolean
           default: false
-
 connections:
   required:
   - aws_authentication
   properties:
     aws_authentication:
-      $ref: massdriver/aws-iam-role
-
+      "$ref": massdriver/aws-iam-role
 artifacts:
   required:
-    - bucket
+  - bucket
   properties:
     bucket:
-      $ref: massdriver/aws-s3-bucket
-
+      "$ref": massdriver/aws-s3-bucket
 ui:
   ui:order:
-    - bucket
-    - monitoring
+  - bucket
+  - monitoring
   bucket:
     ui:order:
-      - region
-      - force_destroy
-      - "*"
+    - region
+    - force_destroy
+    - "*"
     region:
       ui:field: supportedCloudLocationsDropdown
       cloudService: aws
+steps:
+- path: src
+  provisioner: opentofu
+  config:
+    checkov:
+      enable: true
