@@ -1,8 +1,13 @@
 schema: draft-07
 name: aws-s3-application-asset-bucket
-version: 1.0.0
+version: 1.1.0
 description: AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more.
 source_url: https://github.com/massdriver-cloud/aws-s3-application-asset-bucket
+
+steps:
+- path: src
+  provisioner: opentofu
+
 params:
   examples:
   - __name: Development
@@ -17,6 +22,7 @@ params:
       access_logging: true
   required:
   - bucket
+  - lifecycle_settings
   - monitoring
   properties:
     bucket:
@@ -34,6 +40,67 @@ params:
           description: "**WARNING** Enabling this will delete all objects in the bucket during decommission. Disabling will block bucket deletion unless the bucket is empty."
           type: boolean
           default: false
+    lifecycle_settings:
+      title: Object Lifecycle Settings
+      type: object
+      required:
+      - transition_rules
+      - expire
+      properties:
+        transition_rules:
+          title: Object Transition Rules
+          description: Specify the rules to transition objects to cheaper storage classes over time. [Refer to the documentation for transition constraints](https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html).
+          type: array
+          default: []
+          items:
+            type: object
+            required:
+            - storage_class
+            - days
+            properties:
+              storage_class:
+                title: Storage Class
+                description: S3 storage class to transition to. Refer to the [AWS S3 storage class documentation](https://aws.amazon.com/s3/storage-classes/) for details on each storage class.
+                type: string
+                oneOf:
+                - title: Intelligent-Tiering
+                  const: INTELLIGENT_TIERING
+                - title: Standard-Infrequent Access
+                  const: STANDARD_IA
+                - title: One Zone-Infrequent Access
+                  const: ONEZONE_IA
+                - title: Glacier Instant Retrieval
+                  const: GLACIER_IR
+                - title: Glacier Flexible Retrieval
+                  const: GLACIER
+                - title: Glacier Deep Archive
+                  const: DEEP_ARCHIVE
+              days:
+                title: Days
+                description: Number of days after creation when objects are transitioned to the specified storage class.
+                type: integer
+                minimum: 0
+        expire:
+          title: Enable Expiration
+          description: Enable the expiration (deletion) of objects after the specified time
+          type: boolean
+          default: false
+      dependencies:
+        expire:
+          oneOf:
+          - properties:
+              expire:
+                const: false
+          - properties:
+              expire:
+                const: true
+              expiration_days:
+                title: Expiration Days
+                description: Number of days after create when objects will expire
+                type: integer
+                minimum: 1
+            required:
+            - expiration_days
     monitoring:
       title: Monitoring
       type: object
@@ -45,6 +112,7 @@ params:
           description: Enabling this will create an additional bucket for storing [access logs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html)
           type: boolean
           default: false
+
 connections:
   required:
   - aws_authentication
@@ -57,9 +125,11 @@ artifacts:
   properties:
     bucket:
       "$ref": massdriver/aws-s3-bucket
+
 ui:
   ui:order:
   - bucket
+  - lifecycle_settings
   - monitoring
   bucket:
     ui:order:
@@ -69,9 +139,8 @@ ui:
     region:
       ui:field: supportedCloudLocationsDropdown
       cloudService: aws
-steps:
-- path: src
-  provisioner: opentofu
-  config:
-    checkov:
-      enable: true
+  lifecycle_settings:
+    ui:order:
+    - transition_rules
+    - expire
+    - expiration_days
