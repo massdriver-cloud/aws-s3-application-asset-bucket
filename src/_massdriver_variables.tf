@@ -50,3 +50,14 @@ variable "monitoring" {
     access_logging = bool
   })
 }
+// Auto-generated variable declarations from massdriver.yaml
+variable "lifecycle_settings" {
+  type = object({
+    expire = bool
+    transition_rules = list(object({
+      days          = number
+      storage_class = string
+    }))
+    expiration_days = optional(number)
+  })
+}

@@ -20,6 +20,31 @@ resource "aws_s3_bucket_public_access_block" "main" {
   restrict_public_buckets = true
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "main" {
+  count  = length(var.lifecycle_settings.transition_rules) > 0 || var.lifecycle_settings.expire ? 1 : 0
+  bucket = aws_s3_bucket.main.id
+
+  rule {
+    id = "lifecycle"
+
+    status = "Enabled"
+
+    dynamic "expiration" {
+      for_each = var.lifecycle_settings.expire ? ["true"] : []
+      content {
+        days = lookup(var.lifecycle_settings, "expiration_days", null)
+      }
+    }
+
+    dynamic "transition" {
+      for_each = { for rule in var.lifecycle_settings.transition_rules : rule.storage_class => rule }
+      content {
+        storage_class = transition.value.storage_class
+        days          = transition.value.days
+      }
+    }
+  }
+}
 
 // Access Logging
 resource "aws_s3_bucket" "access_logs" {
