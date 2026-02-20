@@ -50,7 +50,6 @@ variable "monitoring" {
     access_logging = bool
   })
 }
-// Auto-generated variable declarations from massdriver.yaml
 variable "lifecycle_settings" {
   type = object({
     expire = bool
@@ -59,5 +58,10 @@ variable "lifecycle_settings" {
       storage_class = string
     }))
     expiration_days = optional(number)
+  })
+}
+variable "encryption" {
+  type = object({
+    custom_kms_key = bool
   })
 }

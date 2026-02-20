@@ -20,15 +20,18 @@ data "aws_iam_policy_document" "bucket_read" {
       "s3:GetObject*"
     ]
   }
-  statement {
-    sid    = "DecryptAccess"
-    effect = "Allow"
-    resources = [
-      module.kms.key_arn
-    ]
-    actions = [
-      "kms:Decrypt"
-    ]
+  dynamic "statement" {
+    for_each = var.encryption.custom_kms_key ? [1] : []
+    content {
+      sid    = "DecryptAccess"
+      effect = "Allow"
+      resources = [
+        module.kms[0].key_arn
+      ]
+      actions = [
+        "kms:Decrypt"
+      ]
+    }
   }
 }
 
@@ -56,17 +59,20 @@ data "aws_iam_policy_document" "bucket_write" {
       "s3:RestoreObject"
     ]
   }
-  statement {
-    sid    = "EncryptAccess"
-    effect = "Allow"
-    resources = [
-      module.kms.key_arn
-    ]
-    actions = [
-      "kms:Decrypt",
-      "kms:Encrypt",
-      "kms:GenerateDataKey"
-    ]
+  dynamic "statement" {
+    for_each = var.encryption.custom_kms_key ? [1] : []
+    content {
+      sid    = "EncryptAccess"
+      effect = "Allow"
+      resources = [
+        module.kms[0].key_arn
+      ]
+      actions = [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey"
+      ]
+    }
   }
 }
 
