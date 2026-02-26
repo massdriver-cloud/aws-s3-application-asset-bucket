@@ -1,6 +1,6 @@
 schema: draft-07
 name: aws-s3-application-asset-bucket
-version: 1.1.0
+version: 1.2.0
 description: AWS S3 Bucket optimized for storing arbitrary application files like avatar images, CSV uploads, videos, and more.
 source_url: https://github.com/massdriver-cloud/aws-s3-application-asset-bucket
 
@@ -23,6 +23,7 @@ params:
   required:
   - bucket
   - lifecycle_settings
+  - encryption
   - monitoring
   properties:
     bucket:
@@ -101,6 +102,18 @@ params:
                 minimum: 1
             required:
             - expiration_days
+    encryption:
+      title: Encryption
+      type: object
+      required:
+      - custom_kms_key
+      properties:
+        custom_kms_key:
+          title: Custom KMS Key
+          description: Enable encryption with a custom KMS key. By default, the bucket will use AWS-managed encryption.
+          type: boolean
+          $md.immutable: true
+          default: false
     monitoring:
       title: Monitoring
       type: object
@@ -130,6 +143,7 @@ ui:
   ui:order:
   - bucket
   - lifecycle_settings
+  - encryption
   - monitoring
   bucket:
     ui:order:
