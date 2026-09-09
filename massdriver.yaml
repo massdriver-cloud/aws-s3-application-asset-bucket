@@ -34,7 +34,11 @@ params:
       - force_destroy
       properties:
         region:
-          "$ref": https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+          type: string
+          title: Region
+          description: AWS Region to provision in.
+          examples:
+          - us-west-2
           "$md.immutable": true
         force_destroy:
           title: Force Destroy Objects
@@ -126,18 +130,15 @@ params:
           type: boolean
           default: false
 
-connections:
-  required:
-  - aws_authentication
-  properties:
-    aws_authentication:
-      "$ref": aws-iam-role
-artifacts:
-  required:
-  - bucket
-  properties:
-    bucket:
-      "$ref": aws-s3-bucket
+dependencies:
+  aws_authentication:
+    resource_type: aws-iam-role
+    required: true
+
+resources:
+  bucket:
+    resource_type: aws-s3-bucket
+    required: true
 
 ui:
   ui:order:

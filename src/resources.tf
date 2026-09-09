@@ -1,7 +1,7 @@
-resource "massdriver_artifact" "bucket" {
+resource "massdriver_resource" "bucket" {
   field    = "bucket"
   name     = "AWS S3 Bucket: ${aws_s3_bucket.main.arn}"
-  artifact = jsonencode(
+  resource = jsonencode(
     {
       infrastructure = {
         arn = aws_s3_bucket.main.arn
